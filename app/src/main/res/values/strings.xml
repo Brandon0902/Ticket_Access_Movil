@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Cineapp</string>
+    <string name="Btn_entrar_text">Entrar</string>
+    <string name="search_hint">Buscar</string>
+    <string name="imagen1_label">Imagen</string>
+</resources>
