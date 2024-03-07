@@ -8,10 +8,11 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.content.SharedPreferences;
 
 import java.io.IOException;
 
-import api.CineAppService;
+import api.TicketaccssAppService;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,7 +25,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText editPassword;
     private Button btnEntrar;
 
-    private CineAppService cineAppService;
+    private TicketaccssAppService cineAppService;
 
 
 
@@ -51,6 +52,8 @@ public class LoginActivity extends AppCompatActivity {
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                             try {
                                 if (response.isSuccessful()){
+                                    String token = response.body().string(); // Suponiendo que el token se devuelve como una cadena en el cuerpo de la respuesta
+                                    saveTokenToSharedPreferences(token);
                                     navigateToMenuActivity();
                                 }else {
                                     String errorMessage = response.errorBody().string();
@@ -80,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
                 .baseUrl("http://10.0.0.13:8000/")
                 .build();
 
-        cineAppService = retrofit.create(CineAppService.class);
+        cineAppService = retrofit.create(TicketaccssAppService.class);
 
 
     }
@@ -92,5 +95,16 @@ public class LoginActivity extends AppCompatActivity {
     private void navigateToMenuActivity(){
         Intent menuActivityIntent = new Intent(this, MenuActivity.class);
         startActivity(menuActivityIntent);
+    }
+
+    private void saveTokenToSharedPreferences(String token) {
+        // Obtener una referencia al SharedPreferences
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        // Obtener un editor para modificar el SharedPreferences
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        // Guardar el token en el SharedPreferences con una clave "token"
+        editor.putString("token", token);
+        // Aplicar los cambios
+        editor.apply();
     }
 }
