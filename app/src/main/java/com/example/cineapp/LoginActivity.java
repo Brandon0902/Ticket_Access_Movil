@@ -5,13 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.IOException;
 
-import api.CineAppService;
+import api.TicketaccssAppService;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -20,11 +21,13 @@ import retrofit2.Retrofit;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText editEmail;
-    private EditText editPassword;
+    private EditText Editemail;
+    private EditText Editpassword;
     private Button btnEntrar;
 
-    private CineAppService cineAppService;
+    private Button btnRecuperarContrasena;
+
+    private TicketaccssAppService TicketaccssAppService;
 
 
 
@@ -34,18 +37,19 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        editEmail = findViewById(R.id.editEmail);
-        editPassword = findViewById(R.id.editPassword);
-        btnEntrar = findViewById(R.id.btnEntrar);
+        Editemail = findViewById(R.id.Editemail);
+        Editpassword= findViewById(R.id.Editpassword);
+        btnEntrar = findViewById(R.id.btnReset);
+        btnRecuperarContrasena = findViewById(R.id.btnRecuperarContrasena);
 
         initRetrofitClient();
 
         btnEntrar.setOnClickListener(view-> {
 
-            String email = editEmail.getText().toString();
-            String password = editPassword.getText().toString();
+            String email = Editemail.getText().toString();
+            String password = Editpassword.getText().toString();
 
-            cineAppService.login(email, password)
+            TicketaccssAppService.login(email, password)
                     .enqueue(new Callback<ResponseBody>() {
                         @Override
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -72,15 +76,26 @@ public class LoginActivity extends AppCompatActivity {
                     });
 
         });
+
+        btnRecuperarContrasena.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Crear un Intent para cambiar de actividad
+                Intent intent = new Intent(LoginActivity.this, resetpassword.class);
+
+                // Iniciar la nueva actividad
+                startActivity(intent);
+            }
+        });
     }
 
     private void initRetrofitClient(){
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.0.13:8000/")
+                .baseUrl("https://techno-pf-bw-sunset.trycloudflare.com/")
                 .build();
 
-        cineAppService = retrofit.create(CineAppService.class);
+        TicketaccssAppService = retrofit.create(TicketaccssAppService.class);
 
 
     }
